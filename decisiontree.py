@@ -13,10 +13,14 @@ def main():
 	
 		# 1. read in inputFileName containing examples
 		# 2. divide exampes into training set (n = trainingSetSize, chosen randomly) and testing set
-		trainingSet, testingSet = getExamples(inputFileName, trainingSetSize)
-
+		trainingSet, testingSet = sortExamples(inputFileName, trainingSetSize)
+		print "Training set: ", len(trainingSet)
+		print "Testing set: ", len(testingSet)
 		
 		# 3. estimate expected prior probability of True or False classifications based on distribution of examples in training set
+		estimatePriorProb(trainingSet, trainingSetSize)
+
+
 		# 4. construct decision tree based on training set
 		# 5. classify examples in testing set using the tree
 		# 6. classify examples in testing set using most likely class determined by prior probabilities
@@ -24,33 +28,45 @@ def main():
 		# 8. repeat 2-7 (a trial) until numberOfTrials == the number of trials run
 		# 9. print results for each trial (review output format)
 
-def getExamples(fileName, trainingSetSize):
+
+def estimatePriorProb(trainingSet, trainingSetSize):
+	trueCount = 0
+	for example in trainingSet: 
+		print example
+		if example["CLASS"] == True:
+			trueCount += 1
+
+	print "trueCount", trueCount
+
+	truePriorProb = float(trueCount/len(trainingSet))
+	falsePriorProb = float(1 - truePriorProb)
+
+	print "truePriorProb", truePriorProb
+	print "falsePriorProb", falsePriorProb
+
+
+
+def sortExamples(fileName, trainingSetSize):
 	examplesFile = open(fileName, "r")
 	examplesDict = csv.DictReader(examplesFile, delimiter='\t')
 	trainingSet = []
 	testingSet = []
-	# i = 0
-
-	# examples = [r for r in examplesDict]
-	# while len(trainingSet) < 10:
-	# 	trainingSet.append(random.choice(examples))
 
 	for example in examplesDict:
-		# i += 1
-		sorter = random.randint(0,1)
-		examplesNeeded = trainingSetSize - len(trainingSet)
-		# examplesLeft = len(list(examplesDict)) - i+1
 
-		# print "need, left: ", examplesNeeded, examplesLeft
-		# if (examplesNeeded == examplesLeft): 
-			# trainingSet.append(example)
+		# swap bool strings with Bools
+		for attribute in example:
+			if example[attribute] == "true":
+				example[attribute] = True
+			else: 
+				example[attribute] = False
+
+		# sort into training and testing sets
+		sorter = random.randint(0,1)
 		if (sorter == 0 and len(trainingSet) < trainingSetSize):
 			trainingSet.append(example)
 		else: 
 			testingSet.append(example)
-
-	print "Training set: ", len(trainingSet)
-	print "Testing set: ", len(testingSet)
 
 	return trainingSet, testingSet
 
