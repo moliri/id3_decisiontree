@@ -18,10 +18,12 @@ def main():
 		print "Testing set: ", len(testingSet)
 		
 		# 3. estimate expected prior probability of True or False classifications based on distribution of examples in training set
-		estimatePriorProb(trainingSet, trainingSetSize)
+		truePriorProbability, falsePriorProbability = estimatePriorProb(trainingSet, trainingSetSize)
 
 
 		# 4. construct decision tree based on training set
+		decisionTree = makeID3Tree(trainingSet)
+
 		# 5. classify examples in testing set using the tree
 		# 6. classify examples in testing set using most likely class determined by prior probabilities
 		# 7. determine proportion of correct classifications in each ^ by comparing classifications to correct answers
@@ -29,20 +31,26 @@ def main():
 		# 9. print results for each trial (review output format)
 
 
+def makeID3Tree(trainingSet, targetAttribute, attributes): 
+	root = []
+
+
 def estimatePriorProb(trainingSet, trainingSetSize):
-	trueCount = 0
+	trueCount = 0.0
 	for example in trainingSet: 
 		print example
 		if example["CLASS"] == True:
-			trueCount += 1
+			trueCount += 1.0
 
 	print "trueCount", trueCount
 
 	truePriorProb = float(trueCount/len(trainingSet))
-	falsePriorProb = float(1 - truePriorProb)
+	falsePriorProb = float((len(trainingSet) - trueCount)/len(trainingSet))
 
 	print "truePriorProb", truePriorProb
 	print "falsePriorProb", falsePriorProb
+
+	return truePriorProb, falsePriorProb
 
 
 
